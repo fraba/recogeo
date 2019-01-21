@@ -1,0 +1,21 @@
+Package: recogeo
+Type: Package
+Title: A R package to reconcile geographies
+Version: 0.1.0
+Author: Francesco Bailo
+Maintainer: Francesco Bailo <me@francescobailo.net>
+Description: It implements functions to reconcile geographies that have been 
+    redrawn. It compares the geographies contained in two spatial objects and 
+    based on a spatial analysis it defines a one-to-one, a one-to-many, a many-to-one 
+    or a many-to-many relation among the geographies of the two spatial objects.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports:
+    sf,
+    sp,
+    dplyr,
+    reshape2
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr

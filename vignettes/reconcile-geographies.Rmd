@@ -1,0 +1,39 @@
+---
+title: "Reconcile geographies"
+author: "Francesco Bailo"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    fig_caption: yes
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r, echo = FALSE, eval = FALSE}
+# Change this
+source("~/public_git/recogeo/R/reconcileGeographies.R")
+load("~/public_git/recogeo/data/polygons.RData")
+```
+
+# Example data
+
+In this document we will use polygons of administrative divisions for 2012 and 2018 of a Mexican state. This is a common situation: we want to merge two datasets of demographics reported for differt years and based on slighly different geographies. Geographies, which usually represent some administrative or electoral unit for which data are reported, might have changed from $time_1$ to $time_2$ in any of the two following way:
+
+1. Geographies $A_1$ and $B_1$ have been merged to form geography $C_2, or
+2. Geography $A_1$ has been split into two or more geographies $B_2$, $C_2$, $D_2$, ...
+
+```{r, eval = FALSE}
+res <- reconcileGeographies(polyA, polyB)
+```
+
+
+
