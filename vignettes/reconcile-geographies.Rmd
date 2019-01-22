@@ -18,21 +18,36 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r, echo = FALSE, eval = FALSE}
-# Change this
-source("~/public_git/recogeo/R/reconcileGeographies.R")
-load("~/public_git/recogeo/data/polygons.RData")
-```
-
 # Example data
 
-In this document we will use polygons of administrative divisions for 2012 and 2018 of a Mexican state. This is a common situation: we want to merge two datasets of demographics reported for differt years and based on slighly different geographies. Geographies, which usually represent some administrative or electoral unit for which data are reported, might have changed from $time_1$ to $time_2$ in any of the two following way:
+```{r, echo = TRUE}
+library(recogeo)
+library(sf)
+data(polygons, package = "recogeo")
+```
 
-1. Geographies $A_1$ and $B_1$ have been merged to form geography $C_2, or
+In this document we will use polygons of administrative divisions for 2012 and 2018 of a Mexican state. This is a common situation: we want to merge two datasets of demographics reported for differt years and based on slighly different geographies. 
+
+```{r fig.show='hold', echo=FALSE}
+plot(poly_a, main = expression('Geo'[1]))
+plot(poly_b, main = expression('Geo'[2]))
+```
+
+
+Geographies, which usually represent some administrative or electoral unit for which data are reported, might have changed from $time_1$ to $time_2$ in any of the two following way:
+
+1. Geographies $A_1$ and $B_1$ have been merged to form geography $C_2
+
+```{r, echo = FALSE}
+plot(poly_a[poly_a$gid %in% c(19,20), ], main = expression(list('A'[1],'B'[1])))
+plot(poly_b[poly_a$gid %in% c(25,26,46), ], main = expression(list('C'[2])))
+```
+
+
 2. Geography $A_1$ has been split into two or more geographies $B_2$, $C_2$, $D_2$, ...
 
-```{r, eval = FALSE}
-res <- reconcileGeographies(polyA, polyB)
+```{r, eval = TRUE}
+res <- reconcileGeographies(poly_a, poly_b)
 ```
 
 
