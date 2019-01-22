@@ -7,6 +7,7 @@
 #' @param project_crs The EPSG coordinate system. The unit must be the metre.
 #' @param dist_buffer The distance for the buffer. Default is 5 metres.
 #' @return A data.frame relating the geographies in the two spatial objects (one-to-one, one-to-many) or many-to-many.
+#' @examples
 #' data(polygons, package = "recogeo")
 #' res <- reconcileGeographies(poly_a, poly_b)
 reconcileGeographies <- function(polyA, polyB,

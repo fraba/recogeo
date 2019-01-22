@@ -22,9 +22,11 @@ reconcileGeographies(polyA, polyB, idA = NULL, idB = NULL,
 }
 \value{
 A data.frame relating the geographies in the two spatial objects (one-to-one, one-to-many) or many-to-many.
-data(polygons, package = "recogeo")
-res <- reconcileGeographies(poly_a, poly_b)
 }
 \description{
 Reconcile geographies (features) from two spatial polygon objects.
+}
+\examples{
+data(polygons, package = "recogeo")
+res <- reconcileGeographies(poly_a, poly_b)
 }
