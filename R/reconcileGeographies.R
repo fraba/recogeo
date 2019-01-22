@@ -1,3 +1,14 @@
+#' Reconcile geographies (features) from two spatial polygon objects.
+#'
+#' @param polyA The first spatial polygon object.
+#' @param polyB The second spatial polygon object.
+#' @param idA The name of the id column in the first object. If not provided, the first column is assume to be the ID.
+#' @param idB The name of the id column in the second object. If not provided, the first column is assume to be the ID.
+#' @param project_crs The EPSG coordinate system. The unit must be the metre.
+#' @param dist_buffer The distance for the buffer. Default is 5 metres.
+#' @return A data.frame relating the geographies in the two spatial objects (one-to-one, one-to-many) or many-to-many.
+#' data(polygons, package = "recogeo")
+#' res <- reconcileGeographies(poly_a, poly_b)
 reconcileGeographies <- function(polyA, polyB,
                                  idA = NULL, idB = NULL,
                                  project_crs = NULL,
