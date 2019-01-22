@@ -11,12 +11,14 @@ Description: It implements functions to reconcile geographies that have been
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-Imports:
+Depends:
     sf,
     sp,
     dplyr,
-    reshape2,
+    reshape2
+Imports:
     ggplot2
-Suggests: knitr,
+Suggests: 
+    knitr,
     rmarkdown
 VignetteBuilder: knitr
