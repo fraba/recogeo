@@ -1,8 +1,7 @@
 reconcileGeographies <- function(polyA, polyB,
                                  idA = NULL, idB = NULL,
                                  project_crs = NULL,
-                                 dist_buffer = 5,
-                                 diff_tollerance = 5) {
+                                 dist_buffer = 5) {
 
   original_polyA <- polyA
   original_polyB <- polyB
@@ -41,15 +40,23 @@ reconcileGeographies <- function(polyA, polyB,
   polyB <- sf::st_transform(polyB, crs=project_crs)
 
   if (!grepl("units\\=m ", as.character(sf::st_crs(polyA))[2])) {
-    stop("CRS units must meters")
+    stop("CRS units must meters. Indicate CRS with `project_crs`.")
   }
 
   # 1: A Equals B
-  res1 <-
+  res1a <-
     sf::st_contains(polyA %>%
                       sf::st_buffer(dist_buffer),
                     polyB,
                     sparse = FALSE)
+
+  res1b <-
+    sf::st_within(polyA,
+                  polyB %>%
+                    sf::st_buffer(dist_buffer),
+                  sparse = FALSE)
+
+  res1 <- res1a == TRUE & res1b == TRUE
 
   rownames(res1) <- paste0("s", polyA$`.unigeokey`)
   colnames(res1) <- paste0("s", polyB$`.unigeokey`)
@@ -64,26 +71,6 @@ reconcileGeographies <- function(polyA, polyB,
   these_combinations1$unigeokey_B <-
     gsub("^s", "", these_combinations1$unigeokey_B)
 
-  poly_A_area <- sf::st_area(polyA)
-  poly_B_area <- sf::st_area(polyB)
-
-  these_combinations1$area_A <-
-    as.numeric(poly_A_area[match(these_combinations1$unigeokey_A,
-                                 polyA$`.unigeokey`)])
-  these_combinations1$area_B <-
-    as.numeric(poly_B_area[match(these_combinations1$unigeokey_B,
-                                 polyB$`.unigeokey`)])
-  area_diff <-
-    with(these_combinations1,
-         area_A - area_B)
-  is_same <-
-    area_diff >= -diff_tollerance & area_diff <= +diff_tollerance
-
-  these_combinations1 <-
-    these_combinations1[is_same,]
-
-  these_combinations1$area_A <- NULL
-  these_combinations1$area_B <- NULL
   these_combinations1$type <- 'same'
 
   # 2: A Contains B
