@@ -103,23 +103,23 @@ reconcileGeographies <- function(polyA, polyB,
 
   # 3: B Contains A
   res3 <-
-    sf::st_equals(polyB %>%
-                    st_buffer(5),
-                  polyA,
-                  sparse = FALSE)
-  rownames(res3) <- paste0("s", polyB$`.unigeokey`)
-  colnames(res3) <- paste0("s", polyA$`.unigeokey`)
+    sf::st_within(polyA,
+                  polyB %>%
+                      st_buffer(5),
+                    sparse = FALSE)
+  rownames(res3) <- paste0("s", polyA$`.unigeokey`)
+  colnames(res3) <- paste0("s", polyB$`.unigeokey`)
 
   require(reshape2)
   these_combinations3 <- reshape2::melt(res3)
   these_combinations3 <- these_combinations3[these_combinations3$value,]
   these_combinations3$value <- NULL
-  colnames(these_combinations3) <- c("unigeokey_B", "unigeokey_A")
+  colnames(these_combinations3) <- c("unigeokey_A", "unigeokey_B")
   these_combinations3$unigeokey_A <-
     gsub("^s", "", these_combinations3$unigeokey_A)
   these_combinations3$unigeokey_B <-
     gsub("^s", "", these_combinations3$unigeokey_B)
-  these_combinations2$type <- 'BcontainsA'
+  these_combinations3$type <- 'BcontainsA'
 
   # Combines
   all_combinations <-
