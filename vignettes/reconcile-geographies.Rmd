@@ -18,13 +18,33 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Example data
+
+# Working example
 
 ```{r, echo = TRUE}
 library(recogeo)
 library(sf)
+library(dplyr)
 data(polygons, package = "recogeo")
+res <- reconcileGeographies(poly_a, poly_b)
 ```
+
+The function `reconcileGeographies()` returns a data.frame with three columns:
+
+```{r, echo = FALSE}
+library(knitr)
+kable(res[sample(1:nrow(res), 10),], row.names = FALSE)
+```
+
+The column `type` can take three values: `r unique(res$type)`.
+
+# Example data
+
+```{r}
+library(sf)
+library(ggplot2)
+```
+
 
 In this document we will use polygons of administrative divisions for 2012 and 2018 of a Mexican state. This is a common situation: we want to merge two datasets of demographics reported for differt years and based on slighly different geographies. 
 
@@ -36,19 +56,47 @@ plot(poly_b, main = expression('Geo'[2]))
 
 Geographies, which usually represent some administrative or electoral unit for which data are reported, might have changed from $time_1$ to $time_2$ in any of the two following way:
 
-1. Geographies $A_1$ and $B_1$ have been merged to form geography $C_2
+1. Geographies $A_1$ and $B_2$ are the same (if $A_1$ contains $=B_2$ and $B_2$ contains $A_1$).
 
-```{r, echo = FALSE}
-plot(poly_a[poly_a$gid %in% c(19,20), ], main = expression(list('A'[1],'B'[1])))
-plot(poly_b[poly_a$gid %in% c(25,26,46), ], main = expression(list('C'[2])))
+```{r, echo = FALSE, fig.width = 6}
+this_poly <- 
+  st_transform(rbind(st_transform(poly_a[320,], crs = 32613), 
+                        poly_b[589,]),  
+               crs = 4326)
+this_poly$geo <- c("A", "B")
+
+ggplot(this_poly) +
+  geom_sf(aes(fill = geo), alpha = .5) +
+  theme_bw() 
 ```
 
 
-2. Geography $A_1$ has been split into two or more geographies $B_2$, $C_2$, $D_2$, ...
+2. Geographies $A_1$ has been merged into geography $B_2 (if $B_2$ contains $A_1$ but $A_1$ does not contain $=B_2$)
 
-```{r, eval = TRUE}
-res <- reconcileGeographies(poly_a, poly_b)
+```{r, echo = FALSE, fig.width = 6}
+this_poly <- 
+  st_transform(rbind(st_transform(poly_a[85,], crs = 32613), 
+                        poly_b[60,]),  
+               crs = 4326)
+this_poly$geo <- c("A", "B")
+
+ggplot(this_poly) +
+  geom_sf(aes(fill = geo), alpha = .5) +
+  theme_bw() 
 ```
 
 
+2. Geography $A_1$ has been split into two or more geographies $B_2$, $C_2$, $D_2$, ... ($A_1$ intersects $B_2$, $C_2$, $D_2$, ...).
 
+```{r, echo = FALSE, fig.width = 6}
+this_poly <- 
+  st_transform(poly_b[c(42,51,53),],  
+               crs = 4326)
+this_poly$geo <- LETTERS[2:4]
+
+ggplot(this_poly) +
+  geom_sf(data = this_poly, aes(fill = geo), alpha = .5) +
+  geom_sf(data = st_transform(poly_a[42,], crs = 32613), fill = NA, 
+          linetype = "11", size = .9) +
+  theme_bw() 
+```
