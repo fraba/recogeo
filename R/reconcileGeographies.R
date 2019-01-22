@@ -31,7 +31,7 @@ reconcileGeographies <- function(polyA, polyB,
   }
 
   if (is.null(project_crs)) {
-    project_crs <- proj4string(sf::st_crs(polyB))
+    project_crs <- sf::st_crs(polyB)
   }
 
   polyA[['.unigeokey']] <- as.character(polyA[[idA]])
@@ -40,7 +40,7 @@ reconcileGeographies <- function(polyA, polyB,
   polyA <- sf::st_transform(polyA, crs=project_crs)
   polyB <- sf::st_transform(polyB, crs=project_crs)
 
-  if (!grepl("units\\=m ", as.character(st_crs(polyA))[2])) {
+  if (!grepl("units\\=m ", as.character(sf::st_crs(polyA))[2])) {
     stop("CRS units must meters")
   }
 
@@ -69,10 +69,10 @@ reconcileGeographies <- function(polyA, polyB,
 
   these_combinations1$area_A <-
     as.numeric(poly_A_area[match(these_combinations1$unigeokey_A,
-                                 polyA$unigeokey)])
+                                 polyA$`.unigeokey`)])
   these_combinations1$area_B <-
     as.numeric(poly_B_area[match(these_combinations1$unigeokey_B,
-                                 polyB$unigeokey)])
+                                 polyB$`.unigeokey`)])
   area_diff <-
     with(these_combinations1,
          area_A - area_B)
@@ -89,11 +89,11 @@ reconcileGeographies <- function(polyA, polyB,
   # 2: A Contains B
   polyA <-
     polyA %>%
-    dplyr::filter(!unigeokey %in%
+    dplyr::filter(!`.unigeokey` %in%
                     these_combinations1$unigeokey_A)
   polyB <-
     polyB %>%
-    dplyr::filter(!unigeokey %in%
+    dplyr::filter(!`.unigeokey` %in%
                     these_combinations1$unigeokey_B)
 
   res2 <-
@@ -101,8 +101,8 @@ reconcileGeographies <- function(polyA, polyB,
                       sf::st_buffer(dist_buffer),
                     polyB,
                     sparse = FALSE)
-  rownames(res2) <- paste0("s", polyA$unigeokey)
-  colnames(res2) <- paste0("s", polyB$unigeokey)
+  rownames(res2) <- paste0("s", polyA$`.unigeokey`)
+  colnames(res2) <- paste0("s", polyB$`.unigeokey`)
 
   these_combinations2 <- reshape2::melt(res2)
   these_combinations2 <- these_combinations2[these_combinations2$value,]
@@ -120,8 +120,8 @@ reconcileGeographies <- function(polyA, polyB,
                     st_buffer(5),
                   polyA,
                   sparse = FALSE)
-  rownames(res3) <- paste0("s", polyB$unigeokey)
-  colnames(res3) <- paste0("s", polyA$unigeokey)
+  rownames(res3) <- paste0("s", polyB$`.unigeokey`)
+  colnames(res3) <- paste0("s", polyA$`.unigeokey`)
 
   require(reshape2)
   these_combinations3 <- reshape2::melt(res3)
@@ -151,15 +151,15 @@ reconcileGeographies <- function(polyA, polyB,
   # 4: A intersects B
   res4 <-
     sf::st_intersects(polyA %>%
-                        dplyr::filter(unigeokey %in% missing_A),
+                        dplyr::filter(`.unigeokey` %in% missing_A),
                       polyB,
                       sparse = FALSE)
   these_combinations4 <- data.frame()
   if (!is.null(res4)) {
     rownames(res4) <-
-      paste0("s", polyA$unigeokey[polyA$unigeokey %in% missing_A])
+      paste0("s", polyA$`.unigeokey`[polyA$`.unigeokey` %in% missing_A])
     colnames(res4) <-
-      paste0("s", polyB$unigeokey)
+      paste0("s", polyB$`.unigeokey`)
     these_combinations4 <- reshape2::melt(res4)
     these_combinations4 <- these_combinations4[these_combinations4$value,]
     these_combinations4$value <- NULL
@@ -174,17 +174,17 @@ reconcileGeographies <- function(polyA, polyB,
   # B intersects A
   res5 <-
     sf::st_intersects(polyB %>%
-                        dplyr::filter(unigeokey %in% missing_B &
-                                        !(unigeokey %in% these_combinations4$unigeokey_B)),
+                        dplyr::filter(`.unigeokey` %in% missing_B &
+                                        !(`.unigeokey` %in% these_combinations4$unigeokey_B)),
                       polyA,
                       sparse = FALSE)
 
   these_combinations5 <- data.frame()
   if (!is.null(dim(res5))) {
     rownames(res5) <-
-      paste0("s", polyB$unigeokey[polyB$unigeokey %in% missing_B])
+      paste0("s", polyB$`.unigeokey`[polyB$`.unigeokey` %in% missing_B])
     colnames(res5) <-
-      paste0("s", polyA$unigeokey)
+      paste0("s", polyA$`.unigeokey`)
     these_combinations5 <- reshape2::melt(res5)
     these_combinations5 <- these_combinations5[these_combinations5$value,]
     these_combinations5$value <- NULL
