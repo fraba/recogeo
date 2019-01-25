@@ -6,6 +6,7 @@
 #' @param idB The name of the id column in the second object. If not provided, the first column is assume to be the ID.
 #' @param project_crs The EPSG coordinate system. The unit must be the metre.
 #' @param dist_buffer The distance for the buffer. Default is 5 metres.
+#' @param min_inters_area The minimum intersection area for to two geometries to be intersecting. Default is 1 m2.
 #' @return A data.frame relating the geographies in the two spatial objects (one-to-one, one-to-many) or many-to-many.
 #' @examples
 #' data(polygons, package = "recogeo")
@@ -13,7 +14,8 @@
 reconcileGeographies <- function(polyA, polyB,
                                  idA = NULL, idB = NULL,
                                  project_crs = NULL,
-                                 dist_buffer = 5) {
+                                 dist_buffer = 5,
+                                 min_inters_area = 1) {
 
   original_polyA <- polyA
   original_polyB <- polyB
@@ -205,27 +207,6 @@ reconcileGeographies <- function(polyA, polyB,
 
   return(all_combinations)
 
-}
-
-
-reconcilePoly <- function(from, to) {
-
-  pnts <-
-    lapply(1:nrow(from), FUN = function(i)
-      coordinates(sp::spsample(from[i,], 1,
-                               type = 'random', iter=10)))
-  df <-
-    data.frame(matrix(unlist(pnts), nrow=nrow(from),
-                      byrow=T))
-
-  pnts.sp <-
-    sp::SpatialPoints(df,
-                      proj4string = CRS(proj4string(from)))
-
-  res <-
-    over(sp::spTransform(pnts.sp, sp::proj4string(to)), to)
-
-  return(res)
 }
 
 
