@@ -17,9 +17,6 @@ reconcileGeographies <- function(polyA, polyB,
                                  dist_buffer = 5,
                                  min_inters_area = 1) {
 
-  original_polyA <- polyA
-  original_polyB <- polyB
-
   if (class(polyA)[1] != 'sf'){
     if (class(polyA)[1] == 'SpatialPolygonsDataFrame') {
       polyA <- sf::st_as_sf(polyA)
@@ -226,5 +223,149 @@ testIntersectionArea <- function(unigeokey_A,
   return(as.numeric(intersection_area) > min_inters_area)
 }
 
+#' Reconcile data based on results from reconcileGeographies().
+#' @param res Results from reconcileGeographies().
+#' @param dataA The first data object. Either a spatial object with a data.frame or a data.frame.
+#' @param dataB The second data object. Either a spatial object with a data.frame or a data.frame.
+#' @param idA The name of the id column in the first object. If not provided, the first column is assume to be the ID.
+#' @param idB The name of the id column in the second object. If not provided, the first column is assume to be the ID.
+#' @param varA An ordered character vector with the names of the variables to concile from the first spatial object.
+#' @param varB An ordered character vector with the names of the variables to concile from the second spatial object.
+#' @param return_spatial Whether to return a spatial object (set to "A" or "B") or a simple data.frame (set to FALSE). "A" or "B" determines which geometries to return, either from the first or the seconf spatial object.
+#' @return A Simple Feature with a data.frame or only a data.frame.
+#' @example
+#'
+reconcileData <- function(res, dataA, dataB,
+                          idA = NULL, idB = NULL,
+                          varA, varB,
+                          return_spatial = "A") {
 
+  if(length(varA) != length(varB)) {
+    stop("The length of the variable name vector differ.")
+  }
+
+  if(is.null(idA)) {
+    idA <- colnames(dataA)[1]
+  }
+  if(is.null(idB)) {
+    idB <- colnames(dataB)[1]
+  }
+
+  reconciliation <-
+    getUniqueReconciliationKey(res)
+
+  # dataA <- poly_a
+  # dataB <- poly_b
+
+  dataA[['.unigeokey']] <- as.character(dataA[[idA]])
+  dataB[['.unigeokey']] <- as.character(dataB[[idB]])
+
+  if (return_spatial != FALSE) {
+    return_spatial <- toupper(return_spatial)
+  }
+
+  if (return_spatial == FALSE) {
+
+    if (class(dataA)[1] == 'sf') {
+      st_geometry(dataA) <- NULL
+    }
+    if (class(dataB)[1] == 'sf') {
+      st_geometry(dataB) <- NULL
+    }
+    if (class(dataA)[1] == 'SpatialPolygonsDataFrame') {
+      dataA <- dataA@data
+    }
+    if (class(dataB)[1] == 'SpatialPolygonsDataFrame') {
+      dataA <- dataB@data
+    }
+
+  } else if (return_spatial == "A") {
+
+    if (class(dataA)[1] != 'sf'){
+      if (class(dataA)[1] == 'SpatialPolygonsDataFrame') {
+        dataA <- sf::st_as_sf(dataA)
+      } else {
+        stop("dataA is not a spatial object of a supported class")
+      }
+    }
+    if (class(dataB)[1] == 'sf') {
+      st_geometry(dataB) <- NULL
+    }
+    if (class(dataB)[1] == 'SpatialPolygonsDataFrame') {
+      dataA <- dataB@data
+    }
+
+  } else if (return_spatial == "B") {
+
+    if (class(dataB)[1] != 'sf'){
+      if (class(dataB)[1] == 'SpatialPolygonsDataFrame') {
+        dataB <- sf::st_as_sf(dataB)
+      } else {
+        stop("dataB is not a spatial object of a supported class")
+      }
+    }
+    if (class(dataA)[1] == 'sf') {
+      st_geometry(dataA) <- NULL
+    }
+    if (class(dataA)[1] == 'SpatialPolygonsDataFrame') {
+      dataA <- dataA@data
+    }
+  } else {
+    stop("return_spatial argument not recognised.")
+  }
+
+  dataA_recogeo <-
+    merge(dataA,
+          reconciliation[reconciliation$set == 'A', 1:2],
+          by.x = '.unigeokey', by.y = '.unigeokey_old',
+          all.x = FALSE) %>%
+    dplyr::group_by(`.unigeokey_new`) %>%
+    dplyr::summarize_at(.vars = vars(varA), .funs = funs("sum"))
+  dataB_recogeo <-
+    merge(dataB,
+          reconciliation[reconciliation$set == 'B', 1:2],
+          by.x = '.unigeokey', by.y = '.unigeokey_old',
+          all.x = FALSE) %>%
+    dplyr::group_by(`.unigeokey_new`) %>%
+    dplyr::summarize_at(.vars = vars(varB), .funs = funs("sum"))
+
+  if (return_spatial == FALSE) {
+    new_data_recogeo <-
+      merge(dataA_recogeo[,c(".unigeokey_new",varA)],
+            dataB_recogeo[,c(".unigeokey_new",varB)],
+            by = ".unigeokey_new", suffix = c("_A","_B"))
+  } else if (return_spatial == "A") {
+    new_data_recogeo <-
+      merge(dataA_recogeo[,c(".unigeokey_new",varA)],
+            dataB_recogeo[,c(".unigeokey_new",varB)],
+            by = ".unigeokey_new", suffix = c("_A","_B"))
+  } else {
+    new_data_recogeo <-
+      merge(dataB_recogeo[,c(".unigeokey_new",varB)],
+            dataA_recogeo[,c(".unigeokey_new",varA)],
+            by = ".unigeokey_new", suffix = c("_B","_A"))
+  }
+  return(new_data_recogeo)
+}
+
+#' Get a unique reconciliation key based on results from reconcileGeographies().
+#'
+#' @param res Results from reconcileGeographies().
+#' @return A data.frame.
+#' @example
+#' unirecogeokey_df <- getUniqueReconciliationKey(res)
+getUniqueReconciliationKey <- function(res) {
+  el  <- cbind(A=paste0(res$unigeokey_A,"~A"),
+               B=paste0(res$unigeokey_B,"~B"))
+  g <- igraph::graph_from_edgelist(el, directed = FALSE)
+  comp <- igraph::components(g)
+  reconciliation <- data.frame(`.unigeokey_old` = names(comp$membership),
+                               `.unigeokey_new` = comp$membership,
+                               row.names = NULL)
+  reconciliation$set <-
+    gsub("^.*~", "", reconciliation$`.unigeokey_old`)
+  reconciliation$`.unigeokey_old` <-
+    gsub("~.*$", "", reconciliation$`.unigeokey_old`)
+  return(reconciliation)
+}
 
