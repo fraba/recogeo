@@ -119,8 +119,8 @@ reconcileGeographies <- function(polyA, polyB,
   res3 <-
     sf::st_within(polyA,
                   polyB %>%
-                      st_buffer(5),
-                    sparse = FALSE)
+                    st_buffer(5),
+                  sparse = FALSE)
   rownames(res3) <- paste0("s", polyA$`.unigeokey`)
   colnames(res3) <- paste0("s", polyB$`.unigeokey`)
 
@@ -170,7 +170,16 @@ reconcileGeographies <- function(polyA, polyB,
     these_combinations4$unigeokey_B <-
       gsub("^s", "", these_combinations4$unigeokey_B)
     these_combinations4$type <- 'AintersectsB'
-  }
+
+    is_intersecting <-
+      mapply(testIntersectionArea,
+             these_combinations4$unigeokey_A,
+             these_combinations4$unigeokey_B,
+             MoreArgs =
+               list(polyA, polyB, min_inters_area))
+
+    }
+
 
   all_combinations <-
     rbind(all_combinations, these_combinations4)
@@ -182,7 +191,28 @@ reconcileGeographies <- function(polyA, polyB,
 
 }
 
-
+#' Test that the intersection area of two geometries is larger than a minimum
+#'
+#' @param unigeokey_A The unique ID of the geometry in the first spatial object.
+#' @param unigeokey_B The unique ID of the geometry in the second spatial object.
+#' @param polyA The first spatial object.
+#' @param polyB The second spatial object.
+#' @param min_inters_area The minimum intersecting area.
+#' @return A logical vector.
+#' @examples
+#' mapply(testIntersectionArea, unigeokeys_A, unigeokeys_B, MoreArgs = list(polyA, polyB, min_inters_area))
+testIntersectionArea <- function(unigeokey_A,
+                                 unigeokey_B,
+                                 polyA,
+                                 polyB,
+                                 min_inters_area) {
+  intersection_area <-
+    st_area(
+      st_intersection(st_geometry(polyA[polyA$.unigeokey == unigeokey_A,]),
+                      st_geometry(polyB[polyB$.unigeokey == unigeokey_B,]))
+    )
+  return(as.numeric(intersection_area) > min_inters_area)
+}
 
 
 
