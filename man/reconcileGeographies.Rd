@@ -5,7 +5,7 @@
 \title{Reconcile geographies (features) from two spatial polygon objects.}
 \usage{
 reconcileGeographies(polyA, polyB, idA = NULL, idB = NULL,
-  project_crs = NULL, dist_buffer = 5)
+  project_crs = NULL, dist_buffer = 5, min_inters_area = 1)
 }
 \arguments{
 \item{polyA}{The first spatial polygon object.}
@@ -19,6 +19,8 @@ reconcileGeographies(polyA, polyB, idA = NULL, idB = NULL,
 \item{project_crs}{The EPSG coordinate system. The unit must be the metre.}
 
 \item{dist_buffer}{The distance for the buffer. Default is 5 metres.}
+
+\item{min_inters_area}{The minimum intersection area for to two geometries to be intersecting. Default is 1 m2.}
 }
 \value{
 A data.frame relating the geographies in the two spatial objects (one-to-one, one-to-many) or many-to-many.
