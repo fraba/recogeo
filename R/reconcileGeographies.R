@@ -172,35 +172,8 @@ reconcileGeographies <- function(polyA, polyB,
     these_combinations4$type <- 'AintersectsB'
   }
 
-  # B intersects A
-  res5 <-
-    sf::st_intersects(polyB %>%
-                        dplyr::filter(`.unigeokey` %in% missing_B &
-                                        !(`.unigeokey` %in% these_combinations4$unigeokey_B)),
-                      polyA,
-                      sparse = FALSE)
-
-  these_combinations5 <- data.frame()
-  if (!is.null(dim(res5))) {
-    rownames(res5) <-
-      paste0("s", polyB$`.unigeokey`[polyB$`.unigeokey` %in% missing_B])
-    colnames(res5) <-
-      paste0("s", polyA$`.unigeokey`)
-    these_combinations5 <- reshape2::melt(res5)
-    these_combinations5 <- these_combinations5[these_combinations5$value,]
-    these_combinations5$value <- NULL
-    colnames(these_combinations5) <- c("unigeokey_B", "unigeokey_A")
-    these_combinations5$unigeokey_A <-
-      gsub("^s", "", these_combinations5$unigeokey_A)
-    these_combinations5$unigeokey_B <-
-      gsub("^s", "", these_combinations5$unigeokey_B)
-    these_combinations5$type <- 'BintersectsA'
-
-  }
-
   all_combinations <-
-    rbind(all_combinations,
-          rbind(these_combinations4, these_combinations5))
+    rbind(all_combinations, these_combinations4)
 
   sum(!polyA$.unigeokey %in% all_combinations$unigeokey_A)
   sum(!polyB$.unigeokey %in% all_combinations$unigeokey_B)
