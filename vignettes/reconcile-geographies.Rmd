@@ -9,12 +9,13 @@ vignette: >
   %\VignetteIndexEntry{Reconcile geographies}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  \usepackage[utf8]{inputenc}
 ---
-
+  
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
+collapse = TRUE,
+comment = "#>"
 )
 ```
 
@@ -36,18 +37,26 @@ kable(res[sample(1:nrow(res), 10),], row.names = FALSE)
 
 The column `type` can take three values: `r unique(res$type)`.
 
+# Reporting on function results
+
+```{r eval=FALSE}
+reportReconciledGeographies(res, poly_a, poly_b, output = 'html')
+```
+
+
 # Example data
 
 ```{r}
 library(ggplot2)
+library(gridExtra)
 ```
 
 
 In this document we will use polygons of administrative divisions for 2012 and 2018 of a Mexican state. This is a common situation: we want to merge two datasets of demographics reported for differt years and based on slighly different geographies. 
 
 ```{r fig.show='hold', echo=FALSE}
-plot(poly_a, main = expression('Geo'[1]))
-plot(poly_b, main = expression('Geo'[2]))
+plot(poly_a, main = expression('Spatial object'[1]))
+plot(poly_b, main = expression('Spatial object'[2]))
 ```
 
 
@@ -55,45 +64,100 @@ Geographies, which usually represent some administrative or electoral unit for w
 
 1. Geographies $A_1$ and $B_2$ are the same (if $A_1$ contains $=B_2$ and $B_2$ contains $A_1$).
 
-```{r, echo = FALSE, fig.width = 6}
-this_poly <- 
-  st_transform(rbind(st_transform(poly_a[320,], crs = 32613), 
-                        poly_b[589,]),  
-               crs = 4326)
-this_poly$geo <- c("A", "B")
-
-ggplot(this_poly) +
-  geom_sf(aes(fill = geo), alpha = .5) +
-  theme_bw() 
+```{r, echo = FALSE, fig.width = 7, fig.height = 6}
+theme_set(theme_bw() +
+            theme(axis.title=element_blank(),
+                  axis.text=element_blank(),
+                  axis.ticks=element_blank()))
+grid.arrange(
+  arrangeGrob(
+    ggplot() +
+      geom_sf(data = st_transform(poly_a[320,], crs = 4326), 
+              fill = 'red', colour = 'red', alpha = .5) +
+      labs(title = 'geography A1 (id = 320)'),
+    ggplot() +
+      geom_sf(data = st_transform(poly_b[589,], crs = 4326), 
+              fill = 'blue', colour = 'blue', alpha = .5) +
+      labs(title = 'geography B2 (id = 589)'),
+    ncol = 2, nrow = 1),
+  ggplot() +
+    geom_sf(data = st_transform(poly_a[320,], crs = 4326), 
+            fill = NA, colour = 'red', alpha = .5) +
+    geom_sf(data = st_transform(poly_b[589,], crs = 4326), 
+            fill = NA, colour = 'blue', alpha = .5),
+  nrow = 2
+)
 ```
 
 
 2. Geographies $A_1$ has been merged into geography $B_2 (if $B_2$ contains $A_1$ but $A_1$ does not contain $=B_2$).
 
-```{r, echo = FALSE, fig.width = 6}
-this_poly <- 
-  st_transform(rbind(st_transform(poly_a[85,], crs = 32613), 
-                        poly_b[60,]),  
-               crs = 4326)
-this_poly$geo <- c("A", "B")
+```{r, echo = FALSE, fig.width = 7, fig.height = 6}
 
-ggplot(this_poly) +
-  geom_sf(aes(fill = geo), alpha = .5) +
-  theme_bw() 
+theme_set(theme_bw() +
+            theme(axis.title=element_blank(),
+                  axis.text=element_blank(),
+                  axis.ticks=element_blank()))
+grid.arrange(
+  arrangeGrob(
+    ggplot() +
+      geom_sf(data = st_transform(poly_a[85,], crs = 4326), 
+              fill = 'red', colour = 'red', alpha = .5) +
+      labs(title = 'geography A1 (id = 85)'),
+    ggplot() +
+      geom_sf(data = st_transform(poly_b[60,], crs = 4326), 
+              fill = 'blue', colour = 'blue', alpha = .5) +
+      labs(title = 'geography B2 (id = 60)'),
+    ncol = 2, nrow = 1),
+  ggplot() +
+    geom_sf(data = st_transform(poly_a[85,], crs = 4326), 
+            fill = NA, colour = 'red', alpha = .5) +
+    geom_sf(data = st_transform(poly_b[60,], crs = 4326), 
+            fill = NA, colour = 'blue', alpha = .5),
+  nrow = 2
+)
 ```
 
 
 3. Geography $A_1$ has been split into two or more geographies $B_2$, $C_2$, $D_2$, ... ($A_1$ intersects $B_2$, $C_2$, $D_2$, ...).
 
-```{r, echo = FALSE, fig.width = 6}
-this_poly <- 
-  st_transform(poly_b[c(42,51,53),],  
-               crs = 4326)
-this_poly$geo <- LETTERS[2:4]
-
-ggplot(this_poly) +
-  geom_sf(data = this_poly, aes(fill = geo), alpha = .5) +
-  geom_sf(data = st_transform(poly_a[42,], crs = 32613), fill = NA, 
-          linetype = "11", size = .9) +
-  theme_bw() 
+```{r, echo = FALSE, fig.width = 7, fig.height = 12}
+theme_set(theme_bw() +
+            theme(axis.title=element_blank(),
+                  axis.text=element_blank(),
+                  axis.ticks=element_blank()))
+grid.arrange(
+  arrangeGrob(
+    ggplot() +
+      geom_sf(data = st_transform(poly_a[75,], crs = 4326), 
+              fill = 'red', colour = 'red', alpha = .5) +
+      labs(title = 'geography A1 (id = 75)'),
+    ggplot() +
+      geom_sf(data = st_transform(poly_b[94,], crs = 4326), 
+              fill = 'blue', colour = 'blue', alpha = .5) +
+      labs(title = 'geography B2 (id = 94)'),
+    ncol = 2, nrow = 1),
+  arrangeGrob(
+    ggplot() +
+      geom_sf(data = st_transform(poly_b[99,], crs = 4326), 
+              fill = 'blue', colour = 'blue', alpha = .5) +
+      labs(title = 'geography C2 (id = 99)'),
+    ggplot() +
+      geom_sf(data = st_transform(poly_b[105,], crs = 4326), 
+              fill = 'blue', colour = 'blue', alpha = .5) +
+      labs(title = 'geography D2 (id = 105)'),
+    ncol = 2, nrow = 1),
+  ggplot() +
+    geom_sf(data = st_transform(poly_a[75,], crs = 4326), 
+            fill = NA, colour = 'red', alpha = .5) +
+    geom_sf(data = st_transform(poly_b[94,], crs = 4326), 
+            fill = NA, colour = 'blue', alpha = .5) +
+      geom_sf(data = st_transform(poly_b[99,], crs = 4326),
+            fill = NA, colour = 'blue', alpha = .5) +
+      geom_sf(data = st_transform(poly_b[105,], crs = 4326), 
+            fill = NA, colour = 'blue', alpha = .5),
+  nrow = 3, heights = c(1,1,1.5)
+)
 ```
+
+
