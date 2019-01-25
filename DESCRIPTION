@@ -15,7 +15,8 @@ Depends:
     sf,
     sp,
     dplyr,
-    reshape2
+    reshape2,
+    igraph
 Imports:
     ggplot2,
     gridExtra
