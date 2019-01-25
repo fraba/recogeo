@@ -184,8 +184,20 @@ reconcileGeographies <- function(polyA, polyB,
   all_combinations <-
     rbind(all_combinations, these_combinations4)
 
-  sum(!polyA$.unigeokey %in% all_combinations$unigeokey_A)
-  sum(!polyB$.unigeokey %in% all_combinations$unigeokey_B)
+  final_check_a <-
+    polyA$.unigeokey[!polyA$.unigeokey %in% all_combinations$unigeokey_A]
+  if(length(final_check_a)>0) {
+    warning(paste0("Warning: Geographies from the first spatial object not related to ",
+                   "any geography in the second spatial object: ",
+                   paste(final_check_a, collapse = ", "), "."))
+  }
+  final_check_b <-
+    polyB$.unigeokey[!polyB$.unigeokey %in% all_combinations$unigeokey_B]
+  if(length(final_check_b)>0) {
+    warning(paste0("Warning: Geographies from the second spatial object not related to ",
+                   "any geography in the first spatial object: ",
+                   paste(final_check_b, collapse = ", "), "."))
+  }
 
   return(all_combinations)
 
