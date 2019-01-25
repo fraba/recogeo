@@ -6,7 +6,7 @@
 #' @param output The type of document to produce: either 'html', 'pdf' or 'word'.
 #' @param type A character vector with one or more type of reconciliations to print out: 'intersects', 'contains' and 'same'.
 #' @return A data.frame relating the geographies in the two spatial objects (one-to-one, one-to-many) or many-to-many.
-#' @examples
+#' @example
 #' reportReconciledGeographies(res, polyA, polyB)
 reportReconciledGeographies <- function(res,
                                         polyA, polyB,
