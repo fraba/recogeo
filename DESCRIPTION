@@ -1,7 +1,7 @@
 Package: recogeo
 Type: Package
 Title: A R package to reconcile geographies
-Version: 0.1.1
+Version: 0.1.2
 Author: Francesco Bailo
 Maintainer: Francesco Bailo <me@francescobailo.net>
 Description: It implements functions to reconcile geographies that have been 
