@@ -169,3 +169,76 @@ typesetFigure <- function(i, coords, Ai, Bi, type) {
 ", i, type, coords, Ai, Ai, Bi, Bi, Ai, Bi),
     "\\n")[[1]])
 }
+
+
+#' Test the spatial charateristics of reconciled geographies.
+#'
+#' @param res The result from reconcileGeometries().
+#' @param polyA The first spatial polygon object passed to reconcileGeometries().
+#' @param polyB The second spatial polygon object passed to reconcileGeometries().
+#' @param idA The name of the id column in the first object. If not provided, the first column is assume to be the ID.
+#' @param idB The name of the id column in the second object. If not provided, the first column is assume to be the ID.
+#' @param project_crs The EPSG coordinate system. The unit must be the metre.
+#' @return
+#' @example
+#' testReconciledGeographies(res, polyA, polyB)
+testReconciledGeographies <- function(res, polyA, polyB,
+                                      idA = NULL, idB = NULL,
+                                      project_crs = NULL) {
+
+  if(is.null(idA)) {
+    idA <- colnames(polyA)[1]
+  }
+  if(is.null(idB)) {
+    idB <- colnames(polyA)[1]
+  }
+
+  if (is.null(project_crs)) {
+    project_crs <- sf::st_crs(polyB)
+  }
+
+  polyA[['.unigeokey']] <- as.character(polyA[[idA]])
+  polyB[['.unigeokey']] <- as.character(polyB[[idB]])
+
+  polyA <- sf::st_transform(polyA, crs=project_crs)
+  polyB <- sf::st_transform(polyB, crs=project_crs)
+
+  if (!grepl("units\\=m ", as.character(sf::st_crs(polyA))[2])) {
+    stop("CRS units must meters. Indicate CRS with `project_crs`.")
+  }
+
+  reconciliation <-
+    getUniqueReconciliationKey(res)
+
+  polyA_recogeo <-
+    merge(polyA,
+          reconciliation[reconciliation$set == 'A', 1:2],
+          by.x = '.unigeokey', by.y = '.unigeokey_old',
+          all.x = FALSE) %>%
+    dplyr::group_by(`.unigeokey_new`) %>%
+    dplyr::summarize(n = n())
+  polyA_recogeo$area <- as.numeric(st_area(polyA_recogeo))
+
+  polyB_recogeo <-
+    merge(polyB,
+          reconciliation[reconciliation$set == 'B', 1:2],
+          by.x = '.unigeokey', by.y = '.unigeokey_old',
+          all.x = FALSE) %>%
+    dplyr::group_by(`.unigeokey_new`) %>%
+    dplyr::summarize(n = n())
+  polyB_recogeo$area <- as.numeric(st_area(polyB_recogeo))
+
+  st_geometry(polyA_recogeo) <- NULL
+  st_geometry(polyB_recogeo) <- NULL
+
+  poly_areas <-
+    merge(polyA_recogeo, polyB_recogeo, by = ".unigeokey_new",
+          suffixes = c("_A", "_B"))
+
+  poly_areas$area_diff_perc <-
+    round((1 - poly_areas$area_B / poly_areas$area_A) * 100, 4)
+
+  return(poly_areas)
+
+
+}
