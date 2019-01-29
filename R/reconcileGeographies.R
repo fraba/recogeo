@@ -138,24 +138,15 @@ reconcileGeographies <- function(polyA, polyB,
   all_combinations <-
     rbind(all_combinations, these_combinations3)
 
-  # Missing
-  missing_A <-
-    polyA$`.unigeokey`[!polyA$`.unigeokey` %in%
-                         all_combinations$unigeokey_A]
-  missing_B <-
-    polyB$`.unigeokey`[!polyB$`.unigeokey` %in%
-                         all_combinations$unigeokey_B]
-
   # 4: A intersects B
   res4 <-
-    sf::st_intersects(polyA %>%
-                        dplyr::filter(`.unigeokey` %in% missing_A),
+    sf::st_intersects(polyA,
                       polyB,
                       sparse = FALSE)
   these_combinations4 <- data.frame()
   if (!is.null(res4)) {
     rownames(res4) <-
-      paste0("s", polyA$`.unigeokey`[polyA$`.unigeokey` %in% missing_A])
+      paste0("s", polyA$`.unigeokey`)
     colnames(res4) <-
       paste0("s", polyB$`.unigeokey`)
     these_combinations4 <- reshape2::melt(res4)
@@ -175,6 +166,16 @@ reconcileGeographies <- function(polyA, polyB,
              MoreArgs =
                list(polyA, polyB, min_inters_area))
 
+    these_combinations4 <-
+      these_combinations4[is_intersecting,]
+
+    these_combinations4 <-
+      these_combinations4[!paste0(these_combinations4$unigeokey_A,
+                                 "|",
+                                 these_combinations4$unigeokey_B) %in%
+                            paste0(all_combinations$unigeokey_A,
+                                   "|",
+                                   all_combinations$unigeokey_B),]
     }
 
 
