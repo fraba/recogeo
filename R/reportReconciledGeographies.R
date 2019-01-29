@@ -186,6 +186,22 @@ testReconciledGeographies <- function(res, polyA, polyB,
                                       idA = NULL, idB = NULL,
                                       project_crs = NULL) {
 
+  if (class(polyA)[1] != 'sf'){
+    if (class(polyA)[1] == 'SpatialPolygonsDataFrame') {
+      polyA <- sf::st_as_sf(polyA)
+    } else {
+      stop("polyA is not a spatial object of a supported class")
+    }
+  }
+
+  if (class(polyB)[1] != 'sf'){
+    if (class(polyB)[1] == 'SpatialPolygonsDataFrame') {
+      polyB <- sf::st_as_sf(polyB)
+    } else {
+      stop("polyB is not a spatial object of a supported class")
+    }
+  }
+
   if(is.null(idA)) {
     idA <- colnames(polyA)[1]
   }
