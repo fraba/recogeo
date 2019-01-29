@@ -206,7 +206,7 @@ testReconciledGeographies <- function(res, polyA, polyB,
     idA <- colnames(polyA)[1]
   }
   if(is.null(idB)) {
-    idB <- colnames(polyA)[1]
+    idB <- colnames(polyB)[1]
   }
 
   if (is.null(project_crs)) {
