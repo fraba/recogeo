@@ -5,6 +5,7 @@ date: "`r Sys.Date()`"
 output: 
   rmarkdown::html_vignette:
     fig_caption: yes
+    dev: 'svg'
 vignette: >
   %\VignetteIndexEntry{Reconcile geographies}
   %\VignetteEngine{knitr::rmarkdown}
@@ -54,9 +55,19 @@ library(gridExtra)
 
 In this document we will use polygons of administrative divisions for 2012 and 2018 of a Mexican state. This is a common situation: we want to merge two datasets of demographics reported for differt years and based on slighly different geographies. 
 
-```{r fig.show='hold', echo=FALSE}
-plot(poly_a, main = expression('Spatial object'[1]))
-plot(poly_b, main = expression('Spatial object'[2]))
+```{r echo = FALSE, fig.width = 7, fig.height = 4}
+theme_set(theme_bw() +
+            theme(axis.title=element_blank(),
+                  axis.text=element_blank(),
+                  axis.ticks=element_blank()))
+grid.arrange(
+ggplot() +
+  geom_sf(data=poly_a) +
+  labs(title = expression('SpatialObject'[1])),
+ggplot() +
+  geom_sf(data=poly_b) +
+  labs(title = expression('SpatialObject'[2])),
+ncol = 2)
 ```
 
 
@@ -74,11 +85,11 @@ grid.arrange(
     ggplot() +
       geom_sf(data = st_transform(poly_a[320,], crs = 4326), 
               fill = 'red', colour = 'red', alpha = .5) +
-      labs(title = 'geography A1 (id = 320)'),
+      labs(title = expression('geography A'[1])),
     ggplot() +
       geom_sf(data = st_transform(poly_b[589,], crs = 4326), 
               fill = 'blue', colour = 'blue', alpha = .5) +
-      labs(title = 'geography B2 (id = 589)'),
+      labs(title = expression('geography B'[1])),
     ncol = 2, nrow = 1),
   ggplot() +
     geom_sf(data = st_transform(poly_a[320,], crs = 4326), 
@@ -103,11 +114,11 @@ grid.arrange(
     ggplot() +
       geom_sf(data = st_transform(poly_a[85,], crs = 4326), 
               fill = 'red', colour = 'red', alpha = .5) +
-      labs(title = 'geography A1 (id = 85)'),
+      labs(title = expression('geography A'[1])),
     ggplot() +
       geom_sf(data = st_transform(poly_b[60,], crs = 4326), 
               fill = 'blue', colour = 'blue', alpha = .5) +
-      labs(title = 'geography B2 (id = 60)'),
+      labs(title = expression('geography B'[2])),
     ncol = 2, nrow = 1),
   ggplot() +
     geom_sf(data = st_transform(poly_a[85,], crs = 4326), 
@@ -131,33 +142,33 @@ grid.arrange(
     ggplot() +
       geom_sf(data = st_transform(poly_a[75,], crs = 4326), 
               fill = 'red', colour = 'red', alpha = .5) +
-      labs(title = 'geography A1 (id = 75)'),
-    ggplot() +
-      geom_sf(data = st_transform(poly_b[94,], crs = 4326), 
-              fill = 'blue', colour = 'blue', alpha = .5) +
-      labs(title = 'geography B2 (id = 94)'),
-    ncol = 2, nrow = 1),
+      labs(title = expression('geography A'[1]))),
   arrangeGrob(
     ggplot() +
       geom_sf(data = st_transform(poly_b[99,], crs = 4326), 
               fill = 'blue', colour = 'blue', alpha = .5) +
-      labs(title = 'geography C2 (id = 99)'),
+      labs(title = expression('geography B'[2])),
     ggplot() +
       geom_sf(data = st_transform(poly_b[105,], crs = 4326), 
               fill = 'blue', colour = 'blue', alpha = .5) +
-      labs(title = 'geography D2 (id = 105)'),
+      labs(title = expression('geography C'[2])),
     ncol = 2, nrow = 1),
   ggplot() +
     geom_sf(data = st_transform(poly_a[75,], crs = 4326), 
             fill = NA, colour = 'red', alpha = .5) +
-    geom_sf(data = st_transform(poly_b[94,], crs = 4326), 
-            fill = NA, colour = 'blue', alpha = .5) +
       geom_sf(data = st_transform(poly_b[99,], crs = 4326),
             fill = NA, colour = 'blue', alpha = .5) +
       geom_sf(data = st_transform(poly_b[105,], crs = 4326), 
             fill = NA, colour = 'blue', alpha = .5),
   nrow = 3, heights = c(1,1,1.5)
 )
+```
+
+# Testing results
+
+```{r}
+test_res <- testReconciledGeographies(res, poly_a, poly_b)
+kable(test_res[1:10,])
 ```
 
 
