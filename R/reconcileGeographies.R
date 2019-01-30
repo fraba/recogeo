@@ -44,6 +44,14 @@ reconcileGeographies <- function(polyA, polyB,
     project_crs <- sf::st_crs(polyB)
   }
 
+  if(any(duplicated(as.character(polyA[[idA]]))) {
+    stop("Duplicated ids in idA")
+  }
+
+  if(any(duplicated(as.character(polyB[[idB]]))) {
+    stop("Duplicated ids in idB")
+  }
+
   polyA[['.unigeokey']] <- as.character(polyA[[idA]])
   polyB[['.unigeokey']] <- as.character(polyB[[idB]])
 
