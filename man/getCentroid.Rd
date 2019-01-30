@@ -18,8 +18,10 @@ A character vector.
 Get the centroid from two geograhies.
 }
 \examples{
+\dontrun{
 getCentroid(
  polyA[res_to_print$unigeokey_A[i],],
  polyB[res_to_print$unigeokey_B[i],]
 )
+}
 }

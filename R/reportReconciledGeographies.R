@@ -6,7 +6,7 @@
 #' @param output The type of document to produce: either 'html', 'pdf' or 'word'.
 #' @param type A character vector with one or more type of reconciliations to print out: 'intersects', 'contains' and 'same'.
 #' @return A data.frame relating the geographies in the two spatial objects (one-to-one, one-to-many) or many-to-many.
-#' @example
+#' @examples
 #' \dontrun{reportReconciledGeographies(res, polyA, polyB)}
 reportReconciledGeographies <- function(res,
                                         polyA, polyB,
@@ -183,8 +183,8 @@ typesetFigure <- function(i, coords, Ai, Bi, type) {
 #' @param idA The name of the id column in the first object. If not provided, the first column is assume to be the ID.
 #' @param idB The name of the id column in the second object. If not provided, the first column is assume to be the ID.
 #' @param project_crs The EPSG coordinate system. The unit must be the metre.
-#' @return
-#' @example
+#' @return A data.frame.
+#' @examples
 #' \dontrun{testReconciledGeographies(res, polyA, polyB)}
 testReconciledGeographies <- function(res, polyA, polyB,
                                       idA = NULL, idB = NULL,

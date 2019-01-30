@@ -20,6 +20,12 @@ testReconciledGeographies(res, polyA, polyB, idA = NULL, idB = NULL,
 
 \item{project_crs}{The EPSG coordinate system. The unit must be the metre.}
 }
+\value{
+A data.frame.
+}
 \description{
 Test the spatial charateristics of reconciled geographies.
+}
+\examples{
+\dontrun{testReconciledGeographies(res, polyA, polyB)}
 }

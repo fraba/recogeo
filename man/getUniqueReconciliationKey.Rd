@@ -15,3 +15,6 @@ A data.frame.
 \description{
 Get a unique reconciliation key based on results from reconcileGeographies().
 }
+\examples{
+\dontrun{unirecogeokey_df <- getUniqueReconciliationKey(res)}
+}

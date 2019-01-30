@@ -25,5 +25,5 @@ A logical vector.
 Test that the intersection area of two geometries is larger than a minimum
 }
 \examples{
-mapply(testIntersectionArea, unigeokeys_A, unigeokeys_B, MoreArgs = list(polyA, polyB, min_inters_area))
+\dontrun{mapply(testIntersectionArea, unigeokeys_A, unigeokeys_B, MoreArgs = list(polyA, polyB, min_inters_area))}
 }

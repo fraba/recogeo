@@ -24,3 +24,6 @@ A data.frame relating the geographies in the two spatial objects (one-to-one, on
 \description{
 Render a report comparing the reconciled geometries.
 }
+\examples{
+\dontrun{reportReconciledGeographies(res, polyA, polyB)}
+}

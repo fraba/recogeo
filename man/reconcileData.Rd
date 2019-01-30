@@ -31,5 +31,5 @@ A Simple Feature with a data.frame or only a data.frame.
 Reconcile data based on results from reconcileGeographies().
 }
 \examples{
-
+\dontrun{reconcile <- reconcileData(res, dataA, dataB, varA = 'population', varB = 'votes')}
 }

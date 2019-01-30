@@ -23,3 +23,11 @@ A character vector.
 \description{
 Typeset the figure.
 }
+\examples{
+\dontrun{
+typesetFigure(i, getCentroid(
+ polyA[res_to_print$unigeokey_A[i],],
+ polyB[res_to_print$unigeokey_B[i],
+)
+}
+}

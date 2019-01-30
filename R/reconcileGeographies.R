@@ -242,7 +242,7 @@ testIntersectionArea <- function(unigeokey_A,
 #' @param varB An ordered character vector with the names of the variables to concile from the second spatial object.
 #' @param return_spatial Whether to return a spatial object (set to "A" or "B") or a simple data.frame (set to FALSE). "A" or "B" determines which geometries to return, either from the first or the seconf spatial object.
 #' @return A Simple Feature with a data.frame or only a data.frame.
-#' @example
+#' @examples
 #' \dontrun{reconcile <- reconcileData(res, dataA, dataB, varA = 'population', varB = 'votes')}
 reconcileData <- function(res, dataA, dataB,
                           idA = NULL, idB = NULL,
@@ -354,7 +354,7 @@ reconcileData <- function(res, dataA, dataB,
 #'
 #' @param res Results from reconcileGeographies().
 #' @return A data.frame.
-#' @example
+#' @examples
 #' \dontrun{unirecogeokey_df <- getUniqueReconciliationKey(res)}
 getUniqueReconciliationKey <- function(res) {
   el  <- cbind(A=paste0(res$unigeokey_A,"~A"),
