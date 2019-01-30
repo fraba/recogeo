@@ -241,10 +241,6 @@ reconcileData <- function(res, dataA, dataB,
                           varA, varB,
                           return_spatial = "A") {
 
-  if(length(varA) != length(varB)) {
-    stop("The length of the variable name vector differ.")
-  }
-
   if(is.null(idA)) {
     idA <- colnames(dataA)[1]
   }
@@ -254,9 +250,6 @@ reconcileData <- function(res, dataA, dataB,
 
   reconciliation <-
     getUniqueReconciliationKey(res)
-
-  # dataA <- poly_a
-  # dataB <- poly_b
 
   dataA[['.unigeokey']] <- as.character(dataA[[idA]])
   dataB[['.unigeokey']] <- as.character(dataB[[idB]])
