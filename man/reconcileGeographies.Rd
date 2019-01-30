@@ -29,6 +29,6 @@ A data.frame relating the geographies in the two spatial objects (one-to-one, on
 Reconcile geographies (features) from two spatial polygon objects.
 }
 \examples{
-data(polygons, package = "recogeo")
+data(poly_a, poly_b, package = "recogeo")
 res <- reconcileGeographies(poly_a, poly_b)
 }

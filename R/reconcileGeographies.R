@@ -9,8 +9,9 @@
 #' @param min_inters_area The minimum intersection area for to two geometries to be intersecting. Default is 1 m2.
 #' @return A data.frame relating the geographies in the two spatial objects (one-to-one, one-to-many) or many-to-many.
 #' @examples
-#' data(polygons, package = "recogeo")
+#' data(poly_a, poly_b, package = "recogeo")
 #' res <- reconcileGeographies(poly_a, poly_b)
+#' @export
 reconcileGeographies <- function(polyA, polyB,
                                  idA = NULL, idB = NULL,
                                  project_crs = NULL,
@@ -244,6 +245,7 @@ testIntersectionArea <- function(unigeokey_A,
 #' @return A Simple Feature with a data.frame or only a data.frame.
 #' @examples
 #' \dontrun{reconcile <- reconcileData(res, dataA, dataB, varA = 'population', varB = 'votes')}
+#' @export
 reconcileData <- function(res, dataA, dataB,
                           idA = NULL, idB = NULL,
                           varA, varB,
@@ -356,6 +358,7 @@ reconcileData <- function(res, dataA, dataB,
 #' @return A data.frame.
 #' @examples
 #' \dontrun{unirecogeokey_df <- getUniqueReconciliationKey(res)}
+#' @export
 getUniqueReconciliationKey <- function(res) {
   el  <- cbind(A=paste0(res$unigeokey_A,"~A"),
                B=paste0(res$unigeokey_B,"~B"))

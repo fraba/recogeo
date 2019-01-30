@@ -8,6 +8,7 @@
 #' @return A data.frame relating the geographies in the two spatial objects (one-to-one, one-to-many) or many-to-many.
 #' @examples
 #' \dontrun{reportReconciledGeographies(res, polyA, polyB)}
+#' @export
 reportReconciledGeographies <- function(res,
                                         polyA, polyB,
                                         output = 'html',
@@ -186,6 +187,7 @@ typesetFigure <- function(i, coords, Ai, Bi, type) {
 #' @return A data.frame.
 #' @examples
 #' \dontrun{testReconciledGeographies(res, polyA, polyB)}
+#' @export
 testReconciledGeographies <- function(res, polyA, polyB,
                                       idA = NULL, idB = NULL,
                                       project_crs = NULL) {

@@ -25,7 +25,7 @@ comment = "#>"
 
 ```{r, echo = TRUE}
 library(recogeo)
-data(polygons, package = "recogeo")
+data(poly_a, poly_b, package = "recogeo")
 res <- reconcileGeographies(poly_a, poly_b)
 ```
 
