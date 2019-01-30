@@ -7,7 +7,7 @@
 #' @param type A character vector with one or more type of reconciliations to print out: 'intersects', 'contains' and 'same'.
 #' @return A data.frame relating the geographies in the two spatial objects (one-to-one, one-to-many) or many-to-many.
 #' @example
-#' reportReconciledGeographies(res, polyA, polyB)
+#' \dontrun{reportReconciledGeographies(res, polyA, polyB)}
 reportReconciledGeographies <- function(res,
                                         polyA, polyB,
                                         output = 'html',
@@ -106,10 +106,12 @@ reportReconciledGeographies <- function(res,
 #' @param geoB The second geography.
 #' @return A character vector.
 #' @examples
+#' \dontrun{
 #' getCentroid(
 #'  polyA[res_to_print$unigeokey_A[i],],
 #'  polyB[res_to_print$unigeokey_B[i],]
 #' )
+#' }
 getCentroid <- function(geoA, geoB) {
   centroid <-
     suppressMessages(
@@ -136,11 +138,13 @@ getCentroid <- function(geoA, geoB) {
 #' @param Bi The index of the geography in the second spatial object.
 #' @param type The type of reconciliation.
 #' @return A character vector.
-#' @example
+#' @examples
+#' \dontrun{
 #' typesetFigure(i, getCentroid(
 #'  polyA[res_to_print$unigeokey_A[i],],
 #'  polyB[res_to_print$unigeokey_B[i],
 #' )
+#' }
 typesetFigure <- function(i, coords, Ai, Bi, type) {
   return(strsplit(
     sprintf(
@@ -181,7 +185,7 @@ typesetFigure <- function(i, coords, Ai, Bi, type) {
 #' @param project_crs The EPSG coordinate system. The unit must be the metre.
 #' @return
 #' @example
-#' testReconciledGeographies(res, polyA, polyB)
+#' \dontrun{testReconciledGeographies(res, polyA, polyB)}
 testReconciledGeographies <- function(res, polyA, polyB,
                                       idA = NULL, idB = NULL,
                                       project_crs = NULL) {

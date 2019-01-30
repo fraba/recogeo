@@ -44,11 +44,11 @@ reconcileGeographies <- function(polyA, polyB,
     project_crs <- sf::st_crs(polyB)
   }
 
-  if(any(duplicated(as.character(polyA[[idA]]))) {
+  if(any(duplicated(as.character(polyA[[idA]])))) {
     stop("Duplicated ids in idA")
   }
 
-  if(any(duplicated(as.character(polyB[[idB]]))) {
+  if(any(duplicated(as.character(polyB[[idB]])))) {
     stop("Duplicated ids in idB")
   }
 
@@ -218,7 +218,7 @@ reconcileGeographies <- function(polyA, polyB,
 #' @param min_inters_area The minimum intersecting area.
 #' @return A logical vector.
 #' @examples
-#' mapply(testIntersectionArea, unigeokeys_A, unigeokeys_B, MoreArgs = list(polyA, polyB, min_inters_area))
+#' \dontrun{mapply(testIntersectionArea, unigeokeys_A, unigeokeys_B, MoreArgs = list(polyA, polyB, min_inters_area))}
 testIntersectionArea <- function(unigeokey_A,
                                  unigeokey_B,
                                  polyA,
@@ -243,7 +243,7 @@ testIntersectionArea <- function(unigeokey_A,
 #' @param return_spatial Whether to return a spatial object (set to "A" or "B") or a simple data.frame (set to FALSE). "A" or "B" determines which geometries to return, either from the first or the seconf spatial object.
 #' @return A Simple Feature with a data.frame or only a data.frame.
 #' @example
-#'
+#' \dontrun{reconcile <- reconcileData(res, dataA, dataB, varA = 'population', varB = 'votes')}
 reconcileData <- function(res, dataA, dataB,
                           idA = NULL, idB = NULL,
                           varA, varB,
@@ -355,7 +355,7 @@ reconcileData <- function(res, dataA, dataB,
 #' @param res Results from reconcileGeographies().
 #' @return A data.frame.
 #' @example
-#' unirecogeokey_df <- getUniqueReconciliationKey(res)
+#' \dontrun{unirecogeokey_df <- getUniqueReconciliationKey(res)}
 getUniqueReconciliationKey <- function(res) {
   el  <- cbind(A=paste0(res$unigeokey_A,"~A"),
                B=paste0(res$unigeokey_B,"~B"))
