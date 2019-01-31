@@ -2,8 +2,8 @@
 #'
 #' @param polyA The first spatial polygon object.
 #' @param polyB The second spatial polygon object.
-#' @param idA The name of the id column in the first object. If not provided, the first column is assume to be the ID.
-#' @param idB The name of the id column in the second object. If not provided, the first column is assume to be the ID.
+#' @param idA The name of the id column in the first object. If not provided, the first column is assumed to be the ID.
+#' @param idB The name of the id column in the second object. If not provided, the first column is assumed to be the ID.
 #' @param project_crs The EPSG coordinate system. The unit must be the metre.
 #' @param dist_buffer The distance for the buffer. Default is 5 metres.
 #' @param min_inters_area The minimum intersection area for to two geometries to be intersecting. Default is 1 m2.
@@ -237,8 +237,8 @@ testIntersectionArea <- function(unigeokey_A,
 #' @param res Results from reconcileGeographies().
 #' @param dataA The first data object. Either a spatial object with a data.frame or a data.frame.
 #' @param dataB The second data object. Either a spatial object with a data.frame or a data.frame.
-#' @param idA The name of the id column in the first object. If not provided, the first column is assume to be the ID.
-#' @param idB The name of the id column in the second object. If not provided, the first column is assume to be the ID.
+#' @param idA The name of the id column in the first object. If not provided, the first column is assumed to be the ID.
+#' @param idB The name of the id column in the second object. If not provided, the first column is assumed to be the ID.
 #' @param varA An ordered character vector with the names of the variables to concile from the first spatial object.
 #' @param varB An ordered character vector with the names of the variables to concile from the second spatial object.
 #' @param return_spatial Whether to return a spatial object (set to "A" or "B") or a simple data.frame (set to FALSE). "A" or "B" determines which geometries to return, either from the first or the seconf spatial object.

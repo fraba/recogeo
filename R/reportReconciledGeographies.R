@@ -181,8 +181,8 @@ typesetFigure <- function(i, coords, Ai, Bi, type) {
 #' @param res The result from reconcileGeometries().
 #' @param polyA The first spatial polygon object passed to reconcileGeometries().
 #' @param polyB The second spatial polygon object passed to reconcileGeometries().
-#' @param idA The name of the id column in the first object. If not provided, the first column is assume to be the ID.
-#' @param idB The name of the id column in the second object. If not provided, the first column is assume to be the ID.
+#' @param idA The name of the id column in the first object. If not provided, the first column is assumed to be the ID.
+#' @param idB The name of the id column in the second object. If not provided, the first column is assumed to be the ID.
 #' @param project_crs The EPSG coordinate system. The unit must be the metre.
 #' @return A data.frame.
 #' @examples
