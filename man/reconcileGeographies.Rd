@@ -12,9 +12,9 @@ reconcileGeographies(polyA, polyB, idA = NULL, idB = NULL,
 
 \item{polyB}{The second spatial polygon object.}
 
-\item{idA}{The name of the id column in the first object. If not provided, the first column is assume to be the ID.}
+\item{idA}{The name of the id column in the first object. If not provided, the first column is assumed to be the ID.}
 
-\item{idB}{The name of the id column in the second object. If not provided, the first column is assume to be the ID.}
+\item{idB}{The name of the id column in the second object. If not provided, the first column is assumed to be the ID.}
 
 \item{project_crs}{The EPSG coordinate system. The unit must be the metre.}
 

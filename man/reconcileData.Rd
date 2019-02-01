@@ -14,9 +14,9 @@ reconcileData(res, dataA, dataB, idA = NULL, idB = NULL, varA, varB,
 
 \item{dataB}{The second data object. Either a spatial object with a data.frame or a data.frame.}
 
-\item{idA}{The name of the id column in the first object. If not provided, the first column is assume to be the ID.}
+\item{idA}{The name of the id column in the first object. If not provided, the first column is assumed to be the ID.}
 
-\item{idB}{The name of the id column in the second object. If not provided, the first column is assume to be the ID.}
+\item{idB}{The name of the id column in the second object. If not provided, the first column is assumed to be the ID.}
 
 \item{varA}{An ordered character vector with the names of the variables to concile from the first spatial object.}
 
