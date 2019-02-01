@@ -63,6 +63,8 @@ reconcileGeographies <- function(polyA, polyB,
     stop("CRS units must meters. Indicate CRS with `project_crs`.")
   }
 
+  all_combinations <- data.frame()
+
   # 1: A Equals B
   res1a <-
     sf::st_contains(polyA %>%
@@ -91,7 +93,12 @@ reconcileGeographies <- function(polyA, polyB,
   these_combinations1$unigeokey_B <-
     gsub("^s", "", these_combinations1$unigeokey_B)
 
-  these_combinations1$type <- 'same'
+  if (nrow(these_combinations1 > 0)) {
+    these_combinations1$type <- 'same'
+    all_combinations <-
+      rbind(all_combinations, these_combinations1)
+  }
+
 
   # 2: A Contains B
   polyA <-
@@ -119,7 +126,11 @@ reconcileGeographies <- function(polyA, polyB,
     gsub("^s", "", these_combinations2$unigeokey_A)
   these_combinations2$unigeokey_B <-
     gsub("^s", "", these_combinations2$unigeokey_B)
-  these_combinations2$type <- 'AcontainsB'
+  if (nrow(these_combinations2 > 0)) {
+    these_combinations2$type <- 'AcontainsB'
+    all_combinations <-
+      rbind(all_combinations, these_combinations2)
+  }
 
   # 3: B Contains A
   res3 <-
@@ -139,13 +150,12 @@ reconcileGeographies <- function(polyA, polyB,
     gsub("^s", "", these_combinations3$unigeokey_A)
   these_combinations3$unigeokey_B <-
     gsub("^s", "", these_combinations3$unigeokey_B)
-  these_combinations3$type <- 'BcontainsA'
+  if (nrow(these_combinations3) > 0) {
+    these_combinations3$type <- 'BcontainsA'
+    all_combinations <-
+      rbind(all_combinations, these_combinations3)
+  }
 
-  # Combines
-  all_combinations <-
-    rbind(these_combinations1, these_combinations2)
-  all_combinations <-
-    rbind(all_combinations, these_combinations3)
 
   # 4: A intersects B
   res4 <-
@@ -186,7 +196,6 @@ reconcileGeographies <- function(polyA, polyB,
                                    "|",
                                    all_combinations$unigeokey_B),]
     }
-
 
   all_combinations <-
     rbind(all_combinations, these_combinations4)
