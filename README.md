@@ -1,4 +1,4 @@
-recogeo: A new R package to reconcile changing geographies boundaries
+recogeo: A new R package to reconcile changing geographic boundaries
 (and corresponding variables)
 ================
 Francesco Bailo
